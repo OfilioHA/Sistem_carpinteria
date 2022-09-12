@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('purchase_receipts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('purchase_id')->constrained();
+            $table->foreignId('purchase_id')->unique()->constrained();
             $table->string('number');
             $table->date('date');
         });

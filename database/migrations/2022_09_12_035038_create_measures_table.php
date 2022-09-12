@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('purchase_types', function (Blueprint $table) {
+        Schema::create('measures', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string("name");
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('purchase_types');
+        Schema::dropIfExists('measures');
     }
 };
