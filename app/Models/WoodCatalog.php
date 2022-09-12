@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class WoodCatalog extends Model
 {
     use HasFactory;
+
+    public $timestamps = false;
 }

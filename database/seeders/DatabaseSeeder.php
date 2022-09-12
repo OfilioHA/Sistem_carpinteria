@@ -16,9 +16,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(
-            PhoneBrandSeeder::class
-        );
+        $this->call([
+            PhoneBrandSeeder::class,
+            WoodSpeciesSeeder::class,
+            WoodCatalogSeeder::class
+        ]);
 
         \App\Models\User::factory(1)->create();
         \App\Models\Supplier::factory(5)

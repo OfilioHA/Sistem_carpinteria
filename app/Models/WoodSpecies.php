@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class WoodSpecies extends Model
 {
     use HasFactory;
+
+    public $timestamps = false;
+
+    public function catalog(){
+        return $this->hasMany(WoodCatalog::class);
+    }
 }

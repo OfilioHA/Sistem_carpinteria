@@ -15,7 +15,7 @@ import Login from "./pages/login";
 import { useAuth } from "./libs/auth";
 
 function App() {
-    const [logged, session] = useAuth();
+    const [logged] = useAuth();
 
     return (
         <BrowserRouter>
