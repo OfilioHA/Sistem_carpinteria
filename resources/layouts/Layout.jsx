@@ -6,8 +6,8 @@ export default function layout({ children }) {
     return (
         <>
             <Header />
-            <main>
-                <Box sx={{ flexGrow: 1 }}>
+            <main style={{margin: "32px 0px"}}> 
+                <Box sx={{flexGrow: 1}}>
                     {children}
                 </Box>
             </main>

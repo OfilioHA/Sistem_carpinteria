@@ -13,7 +13,7 @@ export default function list() {
     return (
         <Layout>
             <Grid container justifyContent={"center"}>
-                <Grid item md={8}>
+                <Grid item md={11}>
                     <DataTable {...config} />
                 </Grid>
             </Grid>

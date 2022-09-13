@@ -8,6 +8,9 @@ import Index from "./pages/index";
 import SuppliersList from "./pages/suppliers/list";
 import Purchases from "./pages/purchases";
 
+//Woods
+import WoodForm from "./pages/woods/form";
+
 import Layout from "./layouts/Layout";
 
 import Login from "./pages/login";
@@ -20,7 +23,29 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                {!logged && (
+                <Route path="/" element={<Layout>{<Example />}</Layout>} />
+                <Route path="/test" element={<Layout>{<Index />}</Layout>} />
+                <Route
+                    path="/suppliers"
+                    element={<Navigate to="/suppliers/list" replace />}
+                />
+                <Route path="/suppliers/list" element={<SuppliersList />} />
+                <Route
+                    path="/purchases"
+                    element={<Layout>{<Purchases />}</Layout>}
+                />
+                <Route
+                    path="/woods/create"
+                    element={<Layout>{<WoodForm />}</Layout>}
+                />
+                <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+        </BrowserRouter>
+    );
+}
+
+/*
+{!logged && (
                     <>
                         <Route path="/login" element={<Login />} />
                         <Route
@@ -31,32 +56,9 @@ function App() {
                 )}
                 {logged && (
                     <>
-                        <Route
-                            path="/"
-                            element={<Layout>{<Example />}</Layout>}
-                        />
-                        <Route
-                            path="/test"
-                            element={<Layout>{<Index />}</Layout>}
-                        />
-                        <Route
-                            path="/suppliers"
-                            element={<Navigate to="/suppliers/list" replace />}
-                        />
-                        <Route
-                            path="/suppliers/list"
-                            element={<SuppliersList />}
-                        />
-                        <Route
-                            path="/purchases"
-                            element={<Layout>{<Purchases />}</Layout>}
-                        />
-                        <Route path="*" element={<Navigate to="/" replace />} />
-                    </>
+
+                      </>
                 )}
-            </Routes>
-        </BrowserRouter>
-    );
-}
+*/
 
 ReactDOM.render(<App />, document.getElementById("app"));

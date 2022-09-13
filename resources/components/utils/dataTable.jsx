@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { getData } from "./../../libs/httpPetitions";
 
 //TODO:: Atomizar este componente, es demasiado grande.
-export default function dataTable(props){
+export default function DataTable(props){
     const {
         title, 
         headers, 
@@ -35,7 +35,7 @@ export default function dataTable(props){
             <Typography variant="h4">
                 {title}
             </Typography>
-            <Divider />
+            <Divider style={{margin: "24px 0px"}} />
             <TableContainer>
                 <Table>
                     <TableHead>
