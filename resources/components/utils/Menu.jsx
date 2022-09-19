@@ -1,9 +1,11 @@
 import { Drawer, List } from "@mui/material";
 import { Box } from "@mui/system";
 import MenuItem from "./MenuItem";
+import { useRecoilState } from "recoil";
+import { userState } from "../../stores/user";
 
 export default function Menu(props) {
-
+    const [user] = useRecoilState(userState);
     const { open, toogle } = props;
 
     const menu = [
@@ -12,24 +14,32 @@ export default function Menu(props) {
             route: '/'
         },
         {
-            text: 'Test',
-            route: '/test'
-        },
-        {
             text: 'Compras',
             route: '/purchases'
         },
         {
             text: 'Proveedores',
             route: '/suppliers'
+        },
+        {
+            text: 'Maderas',
+            route: '/woods'
         }
-    ]
+    ];
+
+    if(user.role_id === 1){
+        menu.push({
+            text: 'Usuarios',
+            route: '/users'
+        })
+    }
 
     return (
         <Drawer 
             anchor="left" 
             open={open}
             onClose={toogle}
+            className="sidebar"
         >
             <Box
                 sx={{width: 250}}

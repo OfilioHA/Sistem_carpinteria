@@ -30,6 +30,7 @@
         "normalize.css": "^8.0.1",
         "react-router-dom": "^6.3.0",
         "react-token-auth": "^2.3.8",
-        "recoil": "^0.7.0"
+        "recoil": "^0.7.5",
+        "recoil-persist": "^4.2.0"
     }
 }

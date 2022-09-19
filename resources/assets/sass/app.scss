@@ -2,6 +2,10 @@
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 @import "/node_modules/normalize.css/normalize.css";
 
+.sidebar a{
+    text-decoration: none;
+    color: #1976d2;
+}
 
 .h-full{
     min-height: 100vh;

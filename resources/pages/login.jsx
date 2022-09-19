@@ -2,9 +2,12 @@ import { TextField, Box, Grid, Button } from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { userState } from "../stores/user";
 import { login } from "../libs/auth";
 
 export default function Login() {
+    const [user, setUser] = useRecoilState(userState);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const history = useNavigate();
@@ -17,6 +20,7 @@ export default function Login() {
                 password
             });
             login(data);
+            setUser(data.user);
             history('/');
         }catch(error){
             console.log(error);

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Wood;
+use App\Models\WoodSpecies;
+use App\Models\WoodVariety;
 use Illuminate\Http\Request;
 
 class WoodController extends Controller
@@ -14,7 +16,27 @@ class WoodController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json([
+            'data' => Wood::withCount('varieties')->get()
+        ]);
+    }
+
+    /** 
+     * Return all Wood Species
+    */
+    public function species(){
+        return response()->json([
+            'data' => WoodSpecies::all()
+        ]);
+    }
+
+    /** 
+     * Return all Wood in Catalog
+    */
+    public function catalog(){
+        return response()->json([
+            'data' => WoodSpecies::with('catalog')->get()
+        ]);
     }
 
     /**
@@ -25,7 +47,21 @@ class WoodController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => ['required'],
+            'species' => ['required'],
+            'varieties' => ["required","array","min:1"]
+        ]);
+
+        $wood = new Wood(['name' => $validated['name']]);
+        $wood->save();
+
+        $varieties = [];
+        foreach($validated['varieties'] as $variety){
+            $varieties[] = new WoodVariety($variety);
+        }
+        $wood->varieties()->saveMany($varieties);
+        return response()->json(['status' => 'ok']);
     }
 
     /**
@@ -59,6 +95,11 @@ class WoodController extends Controller
      */
     public function destroy(Wood $wood)
     {
-        //
+        $wood->varieties()->delete();
+        $wood->delete();
+
+        return response()->json([
+            'status' => 'ok'
+        ]);
     }
 }

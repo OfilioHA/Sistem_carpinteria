@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Wood extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['name'];
+
+    public function varieties(){
+        return $this->hasMany(WoodVariety::class);
+    }
 }

@@ -4,8 +4,8 @@ import { authFetch } from  "./auth";
 //TODO: Implementar Hooks en lugar de funciones normales.
 export const getData = async (route)=>{
     try{
-        const data = await axios.get(
-            `/api/${route}/list`           
+        const {data} = await axios.get(
+            `/api/${route}`           
         );
         console.log(data);
         return data;
