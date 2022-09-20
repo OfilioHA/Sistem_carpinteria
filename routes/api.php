@@ -35,4 +35,5 @@ Route::apiResources([
 Route::prefix('catalog')->group(function () {
     Route::get('/woods', [WoodController::class, 'catalog']);
     Route::get('/woods/species', [WoodController::class, 'species']);
+    Route::get('/users/roles', [UserController::class, 'roles']);
 });

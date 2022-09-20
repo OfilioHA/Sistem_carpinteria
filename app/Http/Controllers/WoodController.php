@@ -23,8 +23,9 @@ class WoodController extends Controller
 
     /** 
      * Return all Wood Species
-    */
-    public function species(){
+     */
+    public function species()
+    {
         return response()->json([
             'data' => WoodSpecies::all()
         ]);
@@ -32,8 +33,9 @@ class WoodController extends Controller
 
     /** 
      * Return all Wood in Catalog
-    */
-    public function catalog(){
+     */
+    public function catalog()
+    {
         return response()->json([
             'data' => WoodSpecies::with('catalog')->get()
         ]);
@@ -49,15 +51,19 @@ class WoodController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required'],
-            'species' => ['required'],
-            'varieties' => ["required","array","min:1"]
+            'wood_species_id' => ['required', 'numeric'],
+            'varieties' => ["required", "array", "min:1"]
         ]);
 
-        $wood = new Wood(['name' => $validated['name']]);
+        $wood = new Wood([
+            'name' => $validated['name'],
+            'wood_species_id' => $validated['wood_species_id']
+        ]);
+
         $wood->save();
 
         $varieties = [];
-        foreach($validated['varieties'] as $variety){
+        foreach ($validated['varieties'] as $variety) {
             $varieties[] = new WoodVariety($variety);
         }
         $wood->varieties()->saveMany($varieties);
@@ -70,9 +76,17 @@ class WoodController extends Controller
      * @param  \App\Models\Wood  $wood
      * @return \Illuminate\Http\Response
      */
-    public function show(Wood $wood)
+    public function show(int $id)
     {
-        //
+        return response()->json([
+            'data' => Wood::select([
+                'id',
+                'name', 
+                'wood_species_id'
+                ])
+                ->with(['varieties'])
+                ->find($id)
+        ]);
     }
 
     /**
@@ -84,7 +98,25 @@ class WoodController extends Controller
      */
     public function update(Request $request, Wood $wood)
     {
-        //
+        $validated = $request->validate([
+            'name' => ['required'],
+            'wood_species_id' => ['required', 'numeric'],
+            'varieties' => ["required", "array", "min:1"]
+        ]);
+
+        $wood->update([
+            'name' => $validated['name'],
+            'wood_species_id' => $validated['wood_species_id']
+        ]);
+
+        $wood->varieties()->delete();
+        $varieties = [];
+        foreach ($validated['varieties'] as $variety) {
+            $varieties[] = new WoodVariety($variety);
+        }
+        $wood->varieties()->saveMany($varieties);
+        return response()->json(['status' => 'ok']);
+
     }
 
     /**

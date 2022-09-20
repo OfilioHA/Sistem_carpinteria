@@ -18,13 +18,15 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Layout from "../../layouts/Layout";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function List() {
     const history = useNavigate();
+    const { id } = useParams();
+
     const [wood, setWood] = useState({
         name: "",
-        species: null,
+        wood_species_id: null,
         varieties: [],
     });
 
@@ -34,6 +36,14 @@ export default function List() {
     });
 
     const [species, setSpecies] = useState([]);
+
+    useEffect(() => {
+        if (id === undefined) return;
+        axios
+            .get(`http://localhost:8000/api/woods/${id}`)
+            .then(({ data }) => setWood(data.data))
+            .catch((error) => console.log(error));
+    }, []);
 
     useEffect(() => {
         axios
@@ -73,13 +83,16 @@ export default function List() {
     const sendData = async (event) => {
         event.preventDefault();
         if (!wood.name) return;
-        if (!wood.species) return;
+        if (!wood.wood_species_id) return;
         if (!wood.varieties.length) return;
-        axios
-            .post("http://localhost:8000/api/woods", wood)
+        const petition = !id
+            ? axios.post("http://localhost:8000/api/woods", wood)
+            : axios.put(`http://localhost:8000/api/woods/${id}`, wood);
+
+        petition
             .then((response) => {
                 console.log(response);
-                history('/woods');
+                history("/woods");
             })
             .catch((error) => console.log(error));
     };
@@ -99,15 +112,16 @@ export default function List() {
                                     label="Nombre"
                                     name="name"
                                     style={{ marginTop: "0px" }}
+                                    value={wood.name || ""}
                                     onChange={handleChange}
                                 />
                                 <TextField
                                     select
                                     fullWidth
-                                    name="species"
+                                    name="wood_species_id"
                                     margin="normal"
                                     label="Especie"
-                                    value={wood.species || ""} // (undefined || '') = ''
+                                    value={wood.wood_species_id || ""}
                                     onChange={handleChange}
                                 >
                                     {species.map(({ id, name }, key) => (

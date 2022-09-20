@@ -17,7 +17,8 @@ import Layout from "./layouts/Layout";
 import Login from "./pages/login";
 
 import UserList from "./pages/users/list";
-
+import UserForm from "./pages/users/form";
+ 
 import { useAuth } from "./libs/auth";
 
 function App() {
@@ -55,10 +56,22 @@ function App() {
                                 path="/woods/create"
                                 element={<WoodForm />}
                             />
+                            <Route
+                                path="/woods/edit/:id"
+                                element={<WoodForm />}
+                            />
                             {/* Rutas para los Usuarios */}
                             <Route
                                 path="/users"
                                 element={<UserList />}
+                            />
+                            <Route
+                                path="/users/create"
+                                element={<UserForm />}
+                            />
+                            <Route
+                                path="/users/edit/:id"
+                                element={<UserForm />}
                             />
                             {/*Rutas Generales*/}
                             <Route

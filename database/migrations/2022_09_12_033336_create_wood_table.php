@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('wood', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('wood_species_id')->constrained();
             $table->string('name');
             $table->timestamps();
         });

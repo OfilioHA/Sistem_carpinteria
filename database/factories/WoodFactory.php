@@ -17,7 +17,8 @@ class WoodFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' => $this->faker->unique()->word(),
+            'wood_species_id' => $this->faker->numberBetween(1, 3)
         ];
     }
 }

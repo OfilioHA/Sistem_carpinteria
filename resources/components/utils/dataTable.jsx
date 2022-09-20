@@ -90,6 +90,11 @@ export default function DataTable(props) {
                                         {user.role_id <= 2 && (
                                             <>
                                                 <IconButton
+                                                    disabled={
+                                                        item["id"] ===
+                                                            user.id &&
+                                                        route == "users"
+                                                    }
                                                     color="error"
                                                     onClick={() =>
                                                         handleOpen(item["id"])
@@ -106,12 +111,8 @@ export default function DataTable(props) {
                                                 </Link>
                                             </>
                                         )}
-                                        <Link
-                                            to={`/${route}/${item["id"]}`}
-                                        >
-                                            <IconButton
-                                                color="primary"
-                                            >
+                                        <Link to={`/${route}/${item["id"]}`}>
+                                            <IconButton color="primary">
                                                 <Visibility />
                                             </IconButton>
                                         </Link>
@@ -133,7 +134,7 @@ export default function DataTable(props) {
                         width: 400,
                         bgcolor: "background.paper",
                         border: "2px solid #000",
-                        borderRadius: '8px',
+                        borderRadius: "8px",
                         boxShadow: 24,
                         p: 4,
                     }}

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Wood;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,6 +15,6 @@ class WoodSeeder extends Seeder
      */
     public function run()
     {
-        //
+        Wood::factory(10)->create();
     }
 }

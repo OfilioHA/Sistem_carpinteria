@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             PhoneBrandSeeder::class,
             WoodSpeciesSeeder::class,
-            WoodCatalogSeeder::class
+            WoodCatalogSeeder::class,
+            WoodSeeder::class
         ]);
 
         \App\Models\User::factory(1)->create();

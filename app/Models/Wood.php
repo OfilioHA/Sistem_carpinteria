@@ -9,7 +9,10 @@ class Wood extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'wood_species_id'
+    ];
 
     public function varieties(){
         return $this->hasMany(WoodVariety::class);
