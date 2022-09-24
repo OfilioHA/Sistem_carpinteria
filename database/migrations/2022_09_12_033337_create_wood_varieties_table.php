@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('wood_varieties', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('wood_id')->unique()->constrained();
+            $table->foreignId('wood_id')->constrained();
             $table->float('width');
             $table->float('height');
         });
