@@ -7,7 +7,7 @@ export const getData = async (route)=>{
         const {data} = await axios.get(
             `/api/${route}`           
         );
-        console.log(data);
+        
         return data;
     }catch(error){
         console.log(error);

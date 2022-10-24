@@ -16,7 +16,7 @@ class UserController extends Controller
     public function index()
     {
         return response()->json([
-            'data' => User::all()->map(function($item){
+            'data' => User::all()->map(function ($item) {
                 return [
                     'id' => $item['id'],
                     'name' => $item['name'],
@@ -26,10 +26,11 @@ class UserController extends Controller
         ]);
     }
 
-    /** 
-     *  Return all the user roles 
+    /**
+     *  Return all the user roles
     */
-    public function roles(){
+    public function roles()
+    {
         return response()->json([
             'data' => Role::all()
         ]);
@@ -49,6 +50,8 @@ class UserController extends Controller
             'role_id' => ['required', 'numeric'],
             'password' => ['required','confirmed','min:6']
         ]);
+
+        $validated['password'] = bcrypt($validated['password']);
 
         (new User($validated))->save();
         

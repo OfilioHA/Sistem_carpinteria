@@ -15,10 +15,9 @@ return new class extends Migration
     {
         Schema::create('people', function (Blueprint $table) {
             $table->id();
+            $table->morphs('person');
             $table->string('firstname');
             $table->string('lastname');
-            $table->string('model_type');
-            $table->unsignedBigInteger('model_id');
         });
     }
 

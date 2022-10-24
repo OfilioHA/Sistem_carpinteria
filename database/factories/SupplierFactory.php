@@ -20,7 +20,8 @@ class SupplierFactory extends Factory
             'name' => $this->faker->name(),
             'direction' => $this->faker->address(),
             'email' => $this->faker->unique()->safeEmail(),
-            'description' => $this->faker->text()
+            'description' => $this->faker->text(),
+            'rating'=> $this->faker->numberBetween(1, 5)
         ];
     }
 }

@@ -15,10 +15,12 @@ return new class extends Migration
     {
         Schema::create('suppliers', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('city_id')->constrained();
             $table->string('name');
             $table->string('direction');
             $table->string('email');
-            $table->string('description');
+            $table->integer('rating')->default(1);
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

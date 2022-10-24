@@ -15,8 +15,9 @@ return new class extends Migration
     {
         Schema::create('purchase_details', function (Blueprint $table) {
             $table->id();
+            $table->morphs('item');
             $table->foreignId('purchase_id')->unique()->constrained();
-            $table->float('discount');
+            $table->float('discount')->default(0);
             $table->float('iva');
             $table->unsignedBigInteger('amount');
             $table->float('price');

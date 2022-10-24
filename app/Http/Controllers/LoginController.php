@@ -8,14 +8,14 @@ use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
-    public function login(Request $request){
-
+    public function login(Request $request)
+    {
         $request->validate([
             'email' => ['required'],
             'password' => ['required']
         ]);
 
-        if(Auth::attempt($request->only('email', 'password'))){
+        if (Auth::attempt($request->only('email', 'password'))) {
             /** @var \App\Models\User **/
             $user = Auth::user();
             return response()->json([
@@ -26,11 +26,12 @@ class LoginController extends Controller
         }
 
         throw ValidationException::withMessages([
-            'email' => [ 'Credenciales incorrectas' ]
+            'email' => ['Credenciales incorrectas']
         ]);
     }
 
-    public function user(Request $request){
+    public function user(Request $request)
+    {
         return response()
             ->json([
                 $request->user()

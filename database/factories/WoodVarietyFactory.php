@@ -17,7 +17,7 @@ class WoodVarietyFactory extends Factory
     public function definition()
     {
         return [
-            //
+          
         ];
     }
 }

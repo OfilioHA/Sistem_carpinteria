@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('purchases', function (Blueprint $table) {
             $table->id();
-            $table->string('model_type');
-            $table->unsignedBigInteger('model_id');
+            $table->string('code');
             $table->date('date_purchase');
+            $table->foreignId('supplier_id')->constrained();
             $table->timestamps();
         });
     }

@@ -22,6 +22,10 @@ export default function Menu(props) {
             route: '/suppliers'
         },
         {
+            text: 'Trabajadores',
+            route: '/workers'
+        },
+        {
             text: 'Maderas',
             route: '/woods'
         }

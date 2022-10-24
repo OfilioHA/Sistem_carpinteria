@@ -6,6 +6,8 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\WoodController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\GeneralCatalogController;
+use App\Http\Controllers\WorkerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,11 +31,17 @@ Route::post('/user', [ LoginController::class, 'user' ]);
 Route::apiResources([
     'woods' => WoodController::class,
     'suppliers' => SupplierController::class,
+    'workers' => WorkerController::class,
     'users' => UserController::class
 ]);
 
 Route::prefix('catalog')->group(function () {
+    Route::get('/jobs', [GeneralCatalogController::class, 'jobs']);
     Route::get('/woods', [WoodController::class, 'catalog']);
+    Route::get('/states', [GeneralCatalogController::class, 'states']);
+    Route::get('/states/{id}/cities', [GeneralCatalogController::class, 'cities']);
     Route::get('/woods/species', [WoodController::class, 'species']);
+    Route::get('/woods/typecuts', [WoodController::class, 'typeCuts']);
+    Route::get('/woods/measures', [WoodController::class, 'measures']);
     Route::get('/users/roles', [UserController::class, 'roles']);
 });

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Measure;
 use App\Models\Wood;
 use App\Models\WoodSpecies;
+use App\Models\WoodTypeCut;
 use App\Models\WoodVariety;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class WoodController extends Controller
@@ -21,7 +24,7 @@ class WoodController extends Controller
         ]);
     }
 
-    /** 
+    /**
      * Return all Wood Species
      */
     public function species()
@@ -31,13 +34,37 @@ class WoodController extends Controller
         ]);
     }
 
-    /** 
+    /**
      * Return all Wood in Catalog
      */
     public function catalog()
     {
         return response()->json([
             'data' => WoodSpecies::with('catalog')->get()
+        ]);
+    }
+
+    /**
+     * Return all Woods Type Cuts
+     */
+    public function typeCuts()
+    {
+        return response()->json([
+            'data' => WoodTypeCut::all()
+        ]);
+    }
+    
+
+    /**
+     * Return all Woods posible Measures
+     */
+    public function measures()
+    {
+        return response()->json([
+            'data' => Measure::where([
+                ['measure_type_id', 1],
+                ['value', '<', 100]
+            ])->get()
         ]);
     }
 
@@ -55,19 +82,28 @@ class WoodController extends Controller
             'varieties' => ["required", "array", "min:1"]
         ]);
 
-        $wood = new Wood([
-            'name' => $validated['name'],
-            'wood_species_id' => $validated['wood_species_id']
-        ]);
-
-        $wood->save();
-
-        $varieties = [];
-        foreach ($validated['varieties'] as $variety) {
-            $varieties[] = new WoodVariety($variety);
+        try {
+            DB::beginTransaction();
+            $wood = new Wood([
+                'name' => $validated['name'],
+                'wood_species_id' => $validated['wood_species_id']
+            ]);
+    
+            $wood->save();
+            foreach ($validated['varieties'] as $variety) {
+                $dimensions = array_merge(...$variety['dimensions']);
+                unset($variety['dimensions']);
+                $variety = new WoodVariety($variety);
+                $variety->wood()->associate($wood);
+                $variety->save();
+                $variety->woodVarietyDimensions()->createMany($dimensions);
+            }
+            DB::commit();
+            return response()->json(['status' => 'ok']);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            dd($e->getMessage());
         }
-        $wood->varieties()->saveMany($varieties);
-        return response()->json(['status' => 'ok']);
     }
 
     /**
@@ -81,11 +117,10 @@ class WoodController extends Controller
         return response()->json([
             'data' => Wood::select([
                 'id',
-                'name', 
+                'name',
                 'wood_species_id'
-                ])
-                ->with(['varieties'])
-                ->find($id)
+            ])->with(['varieties'])
+            ->find($id)
         ]);
     }
 
@@ -110,13 +145,9 @@ class WoodController extends Controller
         ]);
 
         $wood->varieties()->delete();
-        $varieties = [];
-        foreach ($validated['varieties'] as $variety) {
-            $varieties[] = new WoodVariety($variety);
-        }
-        $wood->varieties()->saveMany($varieties);
-        return response()->json(['status' => 'ok']);
+        $wood->varieties()->createMany($validated['varieties']);
 
+        return response()->json(['status' => 'ok']);
     }
 
     /**

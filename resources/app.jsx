@@ -5,21 +5,24 @@ import { RecoilRoot } from "recoil";
 import Example from "./components/Example";
 
 //Suppliers
-import SuppliersList from "./pages/suppliers/list";
-import Purchases from "./pages/purchases";
+import SuppliersList from "./components/suppliers/list";
+import Purchases from "./components/purchases";
 
 //Woods
-import WoodForm from "./pages/woods/form";
-import WoodList from "./pages/woods/list";
+import WoodForm from "./components/woods/form";
+import WoodList from "./components/woods/list";
 
 import Layout from "./layouts/Layout";
 
-import Login from "./pages/login";
+import Login from "./components/login";
 
-import UserList from "./pages/users/list";
-import UserForm from "./pages/users/form";
- 
+import UserList from "./components/users/list";
+import UserForm from "./components/users/form";
+
 import { useAuth } from "./libs/auth";
+import { SuppliersForm } from "./components/suppliers/form";
+import { WorkersList } from "./components/workers/list";
+import { WorkersForm } from "./components/workers/form"
 
 function App() {
     const [logged] = useAuth();
@@ -39,40 +42,35 @@ function App() {
                     )}
                     {logged && (
                         <>
-                            <Route
-                                path="/"
-                                element={<Layout>{<Example />}</Layout>}
-                            />
-                            {/*Rutas para los proveedores*/}
-                            <Route
-                                path="/suppliers"
-                                element={<SuppliersList />}
-                            />
-                            {/*Rutas para las compras*/}
-                            <Route path="/purchases" element={<Purchases />} />
-                            {/*Rutas para la madera*/}
-                            <Route path="/woods" element={<WoodList />} />
-                            <Route
-                                path="/woods/create"
-                                element={<WoodForm />}
-                            />
-                            <Route
-                                path="/woods/edit/:id"
-                                element={<WoodForm />}
-                            />
-                            {/* Rutas para los Usuarios */}
-                            <Route
-                                path="/users"
-                                element={<UserList />}
-                            />
-                            <Route
-                                path="/users/create"
-                                element={<UserForm />}
-                            />
-                            <Route
-                                path="/users/edit/:id"
-                                element={<UserForm />}
-                            />
+                            <Route path="/" element={<Layout />}>
+                                <Route element={<Example/>} index/>
+                                {/*Rutas para los proveedores*/}
+                                <Route path="suppliers">
+                                    <Route element={<SuppliersList />} index />
+                                    <Route path="create" element={<SuppliersForm />} />
+                                </Route>
+                                <Route path="workers">
+                                    <Route element={<WorkersList />} index />
+                                    <Route path="create" element={<WorkersForm />} />
+                                    <Route path="edit/:id" element={<WorkersForm />} />
+                                </Route>
+                                {/*Rutas para las compras*/}
+                                <Route path="purchases">
+                                    <Route element={<Purchases />} index />
+                                </Route>
+                                {/*Rutas para la madera*/}
+                                <Route path="woods">
+                                    <Route element={<WoodList />} index />
+                                    <Route path="create" element={<WoodForm />} />
+                                    <Route path="edit/:id" element={<WoodForm />} />
+                                </Route>
+                                {/* Rutas para los Usuarios */}
+                                <Route path="users">
+                                    <Route element={<UserList />} index />
+                                    <Route path="create" element={<UserForm />} />
+                                    <Route path="/users/edit/:id" element={<UserForm />} />
+                                </Route>
+                            </Route>
                             {/*Rutas Generales*/}
                             <Route
                                 path="*"
