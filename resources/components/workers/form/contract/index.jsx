@@ -13,9 +13,6 @@ import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { WorkerContractsTable } from "./table";
 
-//como reparar select 
-// https://codesandbox.io/s/mui-select-grouping-problem-i9jtj?file=/src/App.js
-
 export function WorkersContractForm({ contracts, handleContracts }) {
     const { control, handleSubmit, reset } = useForm({
         defaultValues: {
@@ -153,21 +150,21 @@ export function WorkersContractForm({ contracts, handleContracts }) {
                             error={Boolean(error)}
                             label="Puesto de trabajo"
                         >
-                            {jobList.map(({ name, jobs }, key) => (
-                                <div>
+                            {jobList.map(({ name, jobs }, key) => {
+                                return [
                                     <ListSubheader key={key}>
                                         {name}
-                                    </ListSubheader>
-                                    {jobs.map((item, subKey) => (
+                                    </ListSubheader>,
+                                    jobs.map((item, subKey) => (
                                         <MenuItem
                                             key={subKey}
                                             value={item["id"]}
                                         >
                                             {item["name"]}
                                         </MenuItem>
-                                    ))}
-                                </div>
-                            ))}
+                                    ))
+                                ]
+                            })}
                         </TextField>
                     )}
                 />
