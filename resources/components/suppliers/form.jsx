@@ -163,7 +163,7 @@ export function SuppliersForm() {
                                             select
                                             disabled={!cities.length}
                                             label="Ciudad"
-                                            error={Boolean(error)}
+                                            error={Boolean(error) && state}
                                         >
                                             {cities.map(({ id, name }, key) => (
                                                 <MenuItem key={key} value={id}>

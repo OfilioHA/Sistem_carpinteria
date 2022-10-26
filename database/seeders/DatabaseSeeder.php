@@ -34,7 +34,11 @@ class DatabaseSeeder extends Seeder
             WoodVarietyDimensionSeeder::class,
             SupplierSeeder::class,
             WorkerSeeder::class,
-            WorkerContractSeeder::class
+            WorkerContractSeeder::class,
+            FurnitureCategorySeeder::class,
+            FurnitureSeeder::class,
+            FurnitureWoodVarietySeeder::class,
+            FurnitureWoodVarietyDimensionSeeder::class
         ]);
 
         \App\Models\User::factory(1)->create();

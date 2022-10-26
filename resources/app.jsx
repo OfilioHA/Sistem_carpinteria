@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { RecoilRoot } from "recoil";
 
 import Example from "./components/Example";
@@ -23,9 +23,22 @@ import { useAuth } from "./libs/auth";
 import { SuppliersForm } from "./components/suppliers/form";
 import { WorkersList } from "./components/workers/list";
 import { WorkersForm } from "./components/workers/form"
+import { useEffect } from "react";
+import axios from "axios";
 
 function App() {
-    const [logged] = useAuth();
+    const [ logged ] = useAuth();
+    //const location = useLocation();
+    //const history = useNavigate();
+
+    /*
+    useEffect(()=> {
+        axios.get('/api/user')
+        .then(()=> console.log('logueado'))
+        .catch(error => console.log(error)); 
+    }, [location])
+    */
+
 
     return (
         <RecoilRoot>
@@ -48,6 +61,7 @@ function App() {
                                 <Route path="suppliers">
                                     <Route element={<SuppliersList />} index />
                                     <Route path="create" element={<SuppliersForm />} />
+                                    <Route path="edit/:id" element={<SuppliersForm />} />
                                 </Route>
                                 <Route path="workers">
                                     <Route element={<WorkersList />} index />
@@ -68,7 +82,7 @@ function App() {
                                 <Route path="users">
                                     <Route element={<UserList />} index />
                                     <Route path="create" element={<UserForm />} />
-                                    <Route path="/users/edit/:id" element={<UserForm />} />
+                                    <Route path="/edit/:id" element={<UserForm />} />
                                 </Route>
                             </Route>
                             {/*Rutas Generales*/}
