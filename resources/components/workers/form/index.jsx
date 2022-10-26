@@ -20,7 +20,7 @@ export function WorkersForm() {
                 lastname: "",
             },
             gender_id: "",
-            city_id: "",
+            //city_id: "",
             code: "",
             identification: "",
             birthday: "",
@@ -43,8 +43,20 @@ export function WorkersForm() {
     }, []);
 
     const sendData = (data) => {
-        data['contracts'] = contracts;
-        console.log(data);
+
+        const contractsCopy = JSON.parse(JSON.stringify(contracts));
+
+        contractsCopy.forEach((item)=> {
+            delete item["job_name"];
+        })
+        
+        data["contracts"] = contractsCopy;
+
+        const petition = axios.post("http://localhost:8000/api/workers", data)
+
+        petition
+            .then(() => console.log('LOL'))
+            .catch((error) => console.log(error));
     };
 
     return (

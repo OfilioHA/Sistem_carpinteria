@@ -6,6 +6,7 @@ use App\Models\City;
 use App\Models\Gender;
 use App\Models\State;
 use App\Models\Job;
+use App\Models\JobType;
 use Illuminate\Http\Request;
 
 class GeneralCatalogController extends Controller
@@ -24,9 +25,10 @@ class GeneralCatalogController extends Controller
         ]);
     }
 
-    public function jobs(){
+    public function jobs()
+    {
         return response()->json([
-            'data' => Job::all()
+            'data' => JobType::with('jobs')->get()
         ]);
     }
 

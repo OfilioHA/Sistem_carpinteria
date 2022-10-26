@@ -1,25 +1,27 @@
-
-import { 
-    Grid, Stack, 
-    Button, TextField, 
-    MenuItem, Typography,
-    Divider 
+import {
+    Grid,
+    Stack,
+    Button,
+    TextField,
+    Divider,
+    Typography,
+    MenuItem,
+    ListSubheader,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { WorkerContractsTable } from "./table";
 
-export function WorkersContractForm({contracts, handleContracts}) {
-
+export function WorkersContractForm({ contracts, handleContracts }) {
     const { control, handleSubmit, reset } = useForm({
         defaultValues: {
-            code: '',
-            start_at: '',
-            end_at: '',
+            code: "",
+            start_at: "",
+            end_at: "",
             salary: 0,
-            job_id: ''
-        }
+            job_id: "",
+        },
     });
 
     const [contractType, setContractType] = useState("Definido");
@@ -39,13 +41,13 @@ export function WorkersContractForm({contracts, handleContracts}) {
     const enableDateEnd = contractType == "Definido";
 
     const handleAddContract = (data) => {
-        data['job_name'] = jobList
-            .filter((e)=> e.id == data.job_id)
-            .pop()['name'];
+        data["job_name"] = jobList.filter((e) => e.id == data.job_id).pop()[
+            "name"
+        ];
 
         handleContracts((prev) => [...prev, data]);
         reset();
-    }
+    };
 
     return (
         <Grid item container spacing={3}>
@@ -148,10 +150,20 @@ export function WorkersContractForm({contracts, handleContracts}) {
                             error={Boolean(error)}
                             label="Puesto de trabajo"
                         >
-                            {jobList.map(({ id, name }, key) => (
-                                <MenuItem key={key} value={id}>
-                                    {name}
-                                </MenuItem>
+                            {jobList.map(({ name, jobs }, key) => (
+                                <div>
+                                    <ListSubheader key={key}>
+                                        {name}
+                                    </ListSubheader>
+                                    {jobs.map((item, subKey) => (
+                                        <MenuItem
+                                            key={subKey}
+                                            value={item["id"]}
+                                        >
+                                            {item["name"]}
+                                        </MenuItem>
+                                    ))}
+                                </div>
                             ))}
                         </TextField>
                     )}
