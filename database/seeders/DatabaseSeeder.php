@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             MeasureSeeder::class,
             JobTypeSeeder::class,
             JobSeeder::class,
+            GenderSeeder::class,
             RoleSeeder::class,
             DimensionSeeder::class,
             PhoneBrandSeeder::class,

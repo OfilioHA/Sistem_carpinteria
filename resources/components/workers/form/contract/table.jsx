@@ -37,7 +37,7 @@ export function WorkerContractsTable({ contracts }) {
                     ))}
                     {!contracts.length && (
                         <TableRow>
-                            <TableCell colSpan={4}>
+                            <TableCell colSpan={5}>
                                 <Typography align="center">
                                     No se han registrado contratos
                                 </Typography>

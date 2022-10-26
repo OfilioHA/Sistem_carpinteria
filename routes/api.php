@@ -38,6 +38,7 @@ Route::apiResources([
 Route::prefix('catalog')->group(function () {
     Route::get('/jobs', [GeneralCatalogController::class, 'jobs']);
     Route::get('/woods', [WoodController::class, 'catalog']);
+    Route::get('/genders', [GeneralCatalogController::class, 'genders']);
     Route::get('/states', [GeneralCatalogController::class, 'states']);
     Route::get('/states/{id}/cities', [GeneralCatalogController::class, 'cities']);
     Route::get('/woods/species', [WoodController::class, 'species']);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
+use App\Models\Gender;
 use App\Models\State;
 use App\Models\Job;
 use Illuminate\Http\Request;
@@ -26,6 +27,13 @@ class GeneralCatalogController extends Controller
     public function jobs(){
         return response()->json([
             'data' => Job::all()
+        ]);
+    }
+
+    public function genders()
+    {
+        return response()->json([
+            'data' => Gender::all()
         ]);
     }
 }

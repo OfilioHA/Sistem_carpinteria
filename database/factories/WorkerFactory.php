@@ -21,7 +21,8 @@ class WorkerFactory extends Factory
             'identification' => strtoupper($this->faker->bothify('2##-######-####?')),
             'birthday' => $this->faker->dateTimeInInterval('-40 years', '-18 years'),
             'direction' => $this->faker->address(),
-            'email' => $this->faker->unique()->email()
+            'email' => $this->faker->unique()->email(),
+            'gender_id' => $this->faker->numberBetween(1, 2)
         ];
     }
 }

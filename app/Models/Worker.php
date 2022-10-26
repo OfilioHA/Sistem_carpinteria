@@ -15,6 +15,7 @@ class Worker extends Model
     use SoftDeletes;
 
     public $with = ['person'];
+    protected $guarded = [];
 
     public function city(): BelongsTo
     {
@@ -32,5 +33,10 @@ class Worker extends Model
             Person::class,
             'person'
         );
+    }
+
+    public function gender(): BelongsTo
+    {
+        return $this->belongsTo(Gender::class);
     }
 }
