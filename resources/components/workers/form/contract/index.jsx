@@ -13,6 +13,9 @@ import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { WorkerContractsTable } from "./table";
 
+//como reparar select 
+// https://codesandbox.io/s/mui-select-grouping-problem-i9jtj?file=/src/App.js
+
 export function WorkersContractForm({ contracts, handleContracts }) {
     const { control, handleSubmit, reset } = useForm({
         defaultValues: {
