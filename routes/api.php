@@ -37,6 +37,10 @@ Route::apiResources([
     'furnitures' => FurnitureController::class
 ]);
 
+Route::prefix('woods')->group(function () {
+    Route::get('/{wood}/varieties', [WoodController::class, 'varieties']);
+});
+
 Route::prefix('catalog')->group(function () {
     Route::get('/jobs', [GeneralCatalogController::class, 'jobs']);
     Route::get('/woods', [WoodController::class, 'catalog']);
@@ -46,5 +50,6 @@ Route::prefix('catalog')->group(function () {
     Route::get('/woods/species', [WoodController::class, 'species']);
     Route::get('/woods/typecuts', [WoodController::class, 'typeCuts']);
     Route::get('/woods/measures', [WoodController::class, 'measures']);
+    Route::get('/furnitures/categories', [FurnitureController::class, 'categories']);
     Route::get('/users/roles', [UserController::class, 'roles']);
 });

@@ -3,10 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Furniture;
+use App\Models\FurnitureCategory;
 use Illuminate\Http\Request;
 
 class FurnitureController extends Controller
 {
+    /**
+     * List all furnitures categories
+    */
+    //Kardex:: https://blog.hubspot.es/sales/que-es-un-kardex
+    public function categories()
+    {
+        return response()->json([
+            'data' => FurnitureCategory::all()
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *

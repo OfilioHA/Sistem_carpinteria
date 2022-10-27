@@ -14,7 +14,6 @@ class WoodController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
      * @return \Illuminate\Http\Response
      */
     public function index()
@@ -53,7 +52,7 @@ class WoodController extends Controller
             'data' => WoodTypeCut::all()
         ]);
     }
-    
+
 
     /**
      * Return all Woods posible Measures
@@ -65,6 +64,57 @@ class WoodController extends Controller
                 ['measure_type_id', 1],
                 ['value', '<', 100]
             ])->get()
+        ]);
+    }
+
+    /**
+     * Return varieties with dimensions from a specific Wood
+     * @param \App\Models\Wood
+     */
+    public function varieties(Wood $wood)
+    {
+        // Query all varieties
+        $varieties = $wood->varieties()->with([
+            'woodVarietyDimensions.measure',
+            'woodVarietyDimensions.dimension',
+            'woodTypeCut',
+        ])->orderBy('wood_type_cut_id', 'ASC')->get();
+
+        // Give varieties a readable format
+        $varietiesFormated = $varieties->map(function ($item) {
+            $formatedElement = [];
+            $formatedElement['id'] = $item->id;
+            $formatedElement['type_cut_name'] = $item->woodTypeCut->name;
+            foreach ($item->woodVarietyDimensions as $dimension) {
+                $dimensionId = $dimension->dimension_id;
+                switch ($dimensionId) {
+                    default:
+                        $name = 'length';
+                        break;
+                    case 2:
+                        $name = 'width';
+                        break;
+                    case 3:
+                        $name = 'density';
+                        break;
+                }
+                $measure =
+                    $dimension->value . ' ' .
+                    $dimension->measure->abbreviation;
+                $formatedElement[$name] = $measure;
+            }
+            $formatedElement['full'] =
+                $formatedElement['type_cut_name'] . ' ' .
+                $formatedElement['length'] . ' ' .
+                $formatedElement['width'] . ' ' .
+                $formatedElement['density'];
+
+            return $formatedElement;
+        });
+
+        // Return all
+        return response()->json([
+            'data' => $varietiesFormated
         ]);
     }
 
@@ -88,7 +138,7 @@ class WoodController extends Controller
                 'name' => $validated['name'],
                 'wood_species_id' => $validated['wood_species_id']
             ]);
-    
+
             $wood->save();
             foreach ($validated['varieties'] as $variety) {
                 $dimensions = array_merge(...$variety['dimensions']);
@@ -120,7 +170,7 @@ class WoodController extends Controller
                 'name',
                 'wood_species_id'
             ])->with(['varieties'])
-            ->find($id)
+                ->find($id)
         ]);
     }
 
