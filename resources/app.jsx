@@ -33,6 +33,7 @@ import { WorkersForm } from "./components/workers/form";
 import { useEffect } from "react";
 import axios from "axios";
 import { FurnitureList } from "./components/furniture/list";
+import { FurnitureForm } from "./components/furniture/fom";
 
 function App() {
     const [logged] = useAuth();
@@ -94,6 +95,8 @@ function App() {
                                 {/*Rutas para los muebles*/}
                                 <Route path="furnitures">
                                     <Route element={<FurnitureList />} index />
+                                    <Route path="create" element={<FurnitureForm />} />
+                                    <Route path="edit/:id" element={<FurnitureForm />} />
                                 </Route>
                                 {/*Rutas para la madera*/}
                                 <Route path="woods">
