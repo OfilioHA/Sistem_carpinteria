@@ -20,7 +20,7 @@ export default function list() {
     };
 
     return (
-        <Grid container justifyContent={"center"}>
+        <Grid container justifyContent="center">
             <Grid item md={11}>
                 <DataTable {...config} />
             </Grid>

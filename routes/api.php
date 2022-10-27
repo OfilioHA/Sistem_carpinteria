@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FurnitureController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
@@ -32,7 +33,8 @@ Route::apiResources([
     'woods' => WoodController::class,
     'suppliers' => SupplierController::class,
     'workers' => WorkerController::class,
-    'users' => UserController::class
+    'users' => UserController::class,
+    'furnitures' => FurnitureController::class
 ]);
 
 Route::prefix('catalog')->group(function () {

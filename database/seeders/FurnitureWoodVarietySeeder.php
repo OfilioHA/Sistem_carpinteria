@@ -20,12 +20,11 @@ class FurnitureWoodVarietySeeder extends Seeder
             $amount = rand(1, 3);
 
             for ($i=0; $i < $amount; $i++) {
-                $furniteVariety = \App\Models\FurnitureWoodVariety::factory(1)
-                    ->make()
-                    ->first();
+                $furnitureVariety = \App\Models\FurnitureWoodVariety::factory(1)->make()->first();
                 $woodVariety = \App\Models\WoodVariety::inRandomOrder()->first();
-                $furniteVariety->woodVariety()->associate($woodVariety);
-                $furniture->varieties()->save($furniteVariety);
+                $furnitureVariety->woodVariety()->associate($woodVariety);
+                $furnitureVariety->furniture()->associate($furniture);
+                $furnitureVariety->save();
             }
         }
     }

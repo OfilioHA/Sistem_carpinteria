@@ -17,7 +17,7 @@ class FurnitureSeeder extends Seeder
         $categories = \App\Models\FurnitureCategory::all();
 
         foreach ($categories as $category) {
-            $amount = rand(4, 12);
+            $amount = rand(2, 5);
             $furnitures = \App\Models\Furniture::factory($amount)->make();
             $category->furnitures()->saveMany($furnitures);
         }

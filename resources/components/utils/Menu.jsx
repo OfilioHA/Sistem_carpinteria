@@ -28,6 +28,10 @@ export default function Menu(props) {
         {
             text: 'Maderas',
             route: '/woods'
+        },
+        {
+            text: 'Muebles',
+            route: '/furnitures'
         }
     ];
 

@@ -11,11 +11,17 @@ class Furniture extends Model
 
     public function category()
     {
-        return $this->belongsTo(FurnitureCategory::class);
+        return $this->belongsTo(
+            FurnitureCategory::class,
+            'furniture_category_id'
+        );
     }
 
     public function varieties()
     {
-        return $this->hasMany(FurnitureWoodVariety::class);
+        return $this->hasMany(
+            FurnitureWoodVariety::class,
+            'furniture_id'
+        );
     }
 }

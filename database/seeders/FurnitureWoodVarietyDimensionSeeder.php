@@ -28,7 +28,7 @@ class FurnitureWoodVarietyDimensionSeeder extends Seeder
                     'value' => $newValue,
                     'measure_id' => $measureId,
                     'dimension_id' => $dimensionId,
-                    'wood_variety_id' => $furnitureVariety->id
+                    'variety_id' => $furnitureVariety->id
                 ]);
             }
         }
