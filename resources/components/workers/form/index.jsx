@@ -61,7 +61,7 @@ export function WorkersForm() {
 
     return (
         <Grid container justifyContent="center">
-            <Grid item container md={10}>
+            <Grid item container md={11}>
                 <form onSubmit={handleSubmit(sendData)}>
                     <Typography variant="h4">Datos Generales</Typography>
                     <Divider style={{ margin: "16px 0px 24px 0px" }} />

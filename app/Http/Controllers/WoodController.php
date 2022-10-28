@@ -87,27 +87,20 @@ class WoodController extends Controller
             $formatedElement['type_cut_name'] = $item->woodTypeCut->name;
             foreach ($item->woodVarietyDimensions as $dimension) {
                 $dimensionId = $dimension->dimension_id;
-                switch ($dimensionId) {
-                    default:
-                        $name = 'length';
-                        break;
-                    case 2:
-                        $name = 'width';
-                        break;
-                    case 3:
-                        $name = 'density';
-                        break;
-                }
+                $nameOptions = ['length', 'width', 'density'];
+                $name = $nameOptions[$dimensionId - 1];
                 $measure =
                     $dimension->value . ' ' .
                     $dimension->measure->abbreviation;
-                $formatedElement[$name] = $measure;
+                $formatedElement[$name]['name'] = $measure;
+                $formatedElement[$name]['measure_value'] = $dimension->measure->value;
+                $formatedElement[$name]['value'] = $dimension->value;
             }
             $formatedElement['full'] =
                 $formatedElement['type_cut_name'] . ' ' .
-                $formatedElement['length'] . ' ' .
-                $formatedElement['width'] . ' ' .
-                $formatedElement['density'];
+                $formatedElement['length']['name'] . ' ' .
+                $formatedElement['width']['name'] . ' ' .
+                $formatedElement['density']['name'];
 
             return $formatedElement;
         });
