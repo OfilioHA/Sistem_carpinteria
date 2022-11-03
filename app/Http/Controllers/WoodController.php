@@ -81,9 +81,10 @@ class WoodController extends Controller
         ])->orderBy('wood_type_cut_id', 'ASC')->get();
 
         // Give varieties a readable format
-        $varietiesFormated = $varieties->map(function ($item) {
+        $varietiesFormated = $varieties->map(function ($item) use ($wood) {
             $formatedElement = [];
             $formatedElement['id'] = $item->id;
+            $formatedElement['wood_name'] = $wood->name;
             $formatedElement['type_cut_name'] = $item->woodTypeCut->name;
             foreach ($item->woodVarietyDimensions as $dimension) {
                 $dimensionId = $dimension->dimension_id;

@@ -5,19 +5,33 @@ import {
     MenuItem,
     TextField,
     Button,
+    //Table parts
+    TableContainer,
+    Table,
+    TableHead,
+    TableBody,
+    TableRow,
+    TableCell,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 
+const dimensions = ["length", "width", "density"];
+
 export function FurnitureForm() {
     const [categories, setCategories] = useState([]);
     const [woods, setWoods] = useState([]);
     const [varieties, setVarieties] = useState([]);
-    const [wood, setWood] = useState("");
-    const [variety, setVariety] = useState();
     const [measures, setMeasures] = useState([]);
-    const [cutTypes, setCutTypes] = useState([]);
+
+    const [wood, setWood] = useState("");
+    const [variety, setVariety] = useState("");
+
+    const [amountMain, setAmountMain] = useState(0);
+    const [amountVariety, setAmountVariety] = useState(0);
+
+    const [furnitureVarieties, setFurnitureVarieties] = useState([]);
 
     useEffect(() => {
         axios
@@ -43,14 +57,6 @@ export function FurnitureForm() {
                 setMeasures(data.data);
             })
             .catch((error) => console.log(error));
-
-        axios
-            .get("http://localhost:8000/api/catalog/woods/typecuts")
-            .then((response) => {
-                const { data } = response;
-                setCutTypes(data.data);
-            })
-            .catch((error) => console.log(error));
     }, []);
 
     useEffect(() => {
@@ -62,30 +68,112 @@ export function FurnitureForm() {
     }, [wood]);
 
     const woodMeasures = useMemo(() => {
-        if(!variety) return [];
-        const obj = {}
-        const dimensions = ['length', 'width', 'density'];
-        const seletedVariety = varieties.filter(({id})=> id == variety).pop();
-        
-        dimensions.forEach((dimension)=> {
-            obj[dimension] = {};
-            obj[dimension]['max'] = seletedVariety[dimension]['value'];
-            console.log(measures);
-            obj[dimension]['measures'] = measures
-                .filter(({ value }) => 
-                    value <= seletedVariety[dimension]['measure_value']
-                );
-        });        
-        
+        const obj = {};
+        dimensions.forEach((dimension) => (obj[dimension] = {}));
+
+        if (!variety) {
+            dimensions.forEach((dimension) => {
+                obj[dimension]["max"] = 0;
+                obj[dimension]["measures"] = [];
+            });
+            return obj;
+        }
+
+        const seletedVariety = varieties.find(({ id }) => id == variety);
+
+        dimensions.forEach((dimension) => {
+            obj[dimension]["max"] = seletedVariety[dimension]["value"];
+            obj[dimension]["measures"] = measures.filter(
+                ({ value }) =>
+                    value <= seletedVariety[dimension]["measure_value"]
+            );
+        });
+
         return obj;
     }, [variety]);
 
-    const { control, handleSubmit } = useForm({
+    const varietySelected = useMemo(() => {
+        return varieties.find((item) => item.id === variety);
+    }, [variety]);
+
+    const furnitureGeneral = useForm({
         defaultValues: {
             name: "",
             furniture_category_id: "",
         },
     });
+
+    const furnitureVariety = useForm({
+        defaultValues: {
+            length: {
+                value: 0,
+                measure_id: "",
+            },
+            width: {
+                value: 0,
+                measure_id: "",
+            },
+            density: {
+                value: 0,
+                measure_id: "",
+            },
+        },
+    });
+
+    const furnitureVarietiesList = useMemo(() => {
+        return furnitureVarieties.map((item) => {
+            let name = "";
+
+            item["dimensions"].forEach((dimension, index) => {
+                const { abbreviation } = measures.find(
+                    (e) => e.id == dimension["measure_id"]
+                );
+                name = name + `${dimension["value"]} ${abbreviation}`;
+                if (index < 2) name = name + " ";
+            });
+
+            let varietyLocal = varieties.find(
+                (e) => e.id == item["variety_id"]
+            );
+            
+            return {
+                name,
+                amount: item["amount"],
+                woodName: varietyLocal['wood_name']
+            };
+        });
+    }, [furnitureVarieties]);
+
+    const addFunitureWoodVareity = (data) => {
+        const dataCopy = JSON.parse(JSON.stringify(data));
+
+        const array = [];
+        const newVariety = {};
+
+        dimensions.forEach((dimension) => {
+            const object = dataCopy[dimension];
+            array.push(object);
+        });
+
+        newVariety["dimensions"] = array;
+        newVariety["amount"] = amountVariety;
+        newVariety["variety_id"] = variety;
+
+        setFurnitureVarieties((prev) => {
+            if (!prev.length) {
+                return [newVariety];
+            } else {
+                return [...prev, newVariety];
+            }
+        });
+
+        furnitureVariety.reset();
+        setVariety("");
+        setVarieties([]);
+        setWood("");
+        setAmountMain(0);
+        setAmountVariety(0);
+    };
 
     return (
         <Grid container justifyContent="center">
@@ -96,7 +184,7 @@ export function FurnitureForm() {
                 </Grid>
                 <Grid item md={6}>
                     <Controller
-                        control={control}
+                        control={furnitureGeneral.control}
                         name="name"
                         rules={{ required: true }}
                         render={({ field, fieldState: { error } }) => (
@@ -111,7 +199,7 @@ export function FurnitureForm() {
                 </Grid>
                 <Grid item md={6}>
                     <Controller
-                        control={control}
+                        control={furnitureGeneral.control}
                         name="furniture_category_id"
                         rules={{ required: true }}
                         render={({ field, fieldState: { error } }) => (
@@ -158,8 +246,8 @@ export function FurnitureForm() {
                         select
                         disabled={!varieties.length}
                         onChange={(e) => setVariety(e.target.value)}
+                        value={variety}
                         label="Variedad"
-                        defaultValue={""}
                     >
                         {varieties.map(({ id, full }, key) => (
                             <MenuItem key={key} value={id}>
@@ -169,159 +257,205 @@ export function FurnitureForm() {
                     </TextField>
                 </Grid>
                 <Grid item md={6}>
-                    <TextField fullWidth label="Cantidad" />
-                </Grid>
-                <Grid item md={6}>
                     <TextField
                         fullWidth
-                        select
-                        label="Tipo de Corte"
-                        defaultValue={""}
-                    >
-                        {cutTypes.map(({ id, name }, key) => (
-                            <MenuItem key={key} value={id}>
-                                {name}
-                            </MenuItem>
-                        ))}
-                    </TextField>
+                        label="Cantidad"
+                        value={amountMain}
+                        onChange={(e) =>
+                            setAmountMain(parseFloat(e.target.value))
+                        }
+                    />
                 </Grid>
             </Grid>
             <Grid item container md={11} spacing={3} marginTop={0}>
                 <Grid item md={12}>
                     <Divider style={{ margin: "16px 0px 0px 0px" }} />
                 </Grid>
+                {dimensions.map((dimension, index) => (
+                    <Grid
+                        container
+                        item
+                        md={12}
+                        key={index}
+                        spacing={3}
+                        marginTop={index == 0 ? 0 : ""}
+                    >
+                        <Grid item md={6}>
+                            <Controller
+                                control={furnitureVariety.control}
+                                name={`${dimension}.value`}
+                                rules={{
+                                    required: true,
+                                    pattern: {
+                                        value: /^(0|[1-9]\d*)(\.\d+)?$/,
+                                    },
+                                    validate: (v) => {
+                                        if (!amountMain) return false;
+                                        if (!amountVariety) return false;
+
+                                        const check =
+                                            furnitureVariety.getValues()[
+                                                dimension
+                                            ];
+
+                                        let measureSelectedValue =
+                                            measures.find(
+                                                (item) =>
+                                                    item.id ==
+                                                    check["measure_id"]
+                                            );
+
+                                        if (!measureSelectedValue) return false;
+
+                                        v = parseFloat(v);
+
+                                        measureSelectedValue =
+                                            measureSelectedValue["value"];
+
+                                        let measureVarietyValue =
+                                            varietySelected[dimension][
+                                                "measure_value"
+                                            ];
+
+                                        let measureVarietyDimension =
+                                            varietySelected[dimension]["value"];
+
+                                        let decimal =
+                                            measureVarietyValue /
+                                            measureSelectedValue;
+
+                                        let decimalBig = 1;
+
+                                        if (decimal < 1) {
+                                            decimalBig =
+                                                Math.abs(measureSelectedValue);
+                                        }
+
+                                        let amountMainLocal = Math.abs(
+                                            measureVarietyDimension * decimalBig
+                                        );
+
+                                        let amountVarietyLocal = Math.abs(
+                                            v *
+                                                (measureSelectedValue /
+                                                    decimalBig)
+                                        );
+
+                                        if (dimension != "density") {
+                                            amountVarietyLocal =
+                                                amountVarietyLocal *
+                                                amountVariety;
+
+                                            amountMainLocal =
+                                                amountMainLocal * amountMain;
+                                        }
+
+                                        return (
+                                            amountVarietyLocal <=
+                                            amountMainLocal
+                                        );
+                                    },
+                                }}
+                                render={({ field, fieldState: { error } }) => (
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        label="Cantidad"
+                                        disabled={!variety}
+                                        error={
+                                            Boolean(error) && Boolean(variety)
+                                        }
+                                    />
+                                )}
+                            />
+                        </Grid>
+                        <Grid item md={6}>
+                            <Controller
+                                control={furnitureVariety.control}
+                                name={`${dimension}.measure_id`}
+                                rules={{ required: true }}
+                                render={({ field, fieldState: { error } }) => (
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        select
+                                        label="Medida"
+                                        disabled={!variety}
+                                        error={Boolean(error) && variety}
+                                    >
+                                        {woodMeasures[dimension][
+                                            "measures"
+                                        ].map(({ id, name }, key) => (
+                                            <MenuItem key={key} value={id}>
+                                                {name}
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>
+                                )}
+                            />
+                        </Grid>
+                    </Grid>
+                ))}
                 <Grid item md={6}>
-                    <Controller
-                        name="width.value"
-                        control={control}
-                        rules={{
-                            required: true,
-                            pattern: {
-                                value: /^(0|[1-9]\d*)(\.\d+)?$/,
-                            },
-                            validate: (v) => parseFloat(v) > 0,
-                        }}
-                        render={({ field, fieldState: { error } }) => (
-                            <TextField
-                                {...field}
-                                fullWidth
-                                margin="normal"
-                                label="Ancho"
-                                error={Boolean(error)}
-                            />
-                        )}
-                    />
-                    <Controller
-                        name="length.value"
-                        control={control}
-                        rules={{
-                            required: true,
-                            pattern: {
-                                value: /^(0|[1-9]\d*)(\.\d+)?$/,
-                            },
-                            validate: (v) => parseFloat(v) > 0,
-                        }}
-                        render={({ field, fieldState: { error } }) => (
-                            <TextField
-                                {...field}
-                                fullWidth
-                                margin="normal"
-                                label="Longitud"
-                                error={Boolean(error)}
-                            />
-                        )}
-                    />
-                    <Controller
-                        name="density.value"
-                        control={control}
-                        rules={{
-                            required: true,
-                            pattern: {
-                                value: /^(0|[1-9]\d*)(\.\d+)?$/,
-                            },
-                            validate: (v) => parseFloat(v) > 0,
-                        }}
-                        render={({ field, fieldState: { error } }) => (
-                            <TextField
-                                {...field}
-                                fullWidth
-                                margin="normal"
-                                label="Espesor"
-                                error={Boolean(error)}
-                            />
-                        )}
+                    <TextField
+                        fullWidth
+                        label="Cantidad de partes"
+                        disabled={!Boolean(amountMain)}
+                        onChange={(e) =>
+                            setAmountVariety(parseFloat(e.target.value))
+                        }
+                        value={amountVariety}
                     />
                 </Grid>
-                <Grid item md={6}>
-                    <Controller
-                        name="width.measure_id"
-                        control={control}
-                        rules={{ required: true }}
-                        render={({ field, fieldState: { error } }) => (
-                            <TextField
-                                {...field}
-                                select
-                                fullWidth
-                                margin="normal"
-                                label="Tipo de medida"
-                                error={Boolean(error)}
-                            >
-                                {woodMeasures.map(({ id, name }, key) => (
-                                    <MenuItem key={key} value={id}>
-                                        {name}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
+                <Grid item container md={12} justifyContent="end">
+                    <Button
+                        variant="contained"
+                        size="large"
+                        onClick={furnitureVariety.handleSubmit(
+                            addFunitureWoodVareity
                         )}
-                    />
-                    <Controller
-                        name="length.measure_id"
-                        control={control}
-                        rules={{ required: true }}
-                        render={({ field, fieldState: { error } }) => (
-                            <TextField
-                                {...field}
-                                select
-                                fullWidth
-                                margin="normal"
-                                label="Tipo de medida"
-                                error={Boolean(error)}
-                            >
-                                {woodMeasures.map(({ id, name }, key) => (
-                                    <MenuItem key={key} value={id}>
-                                        {name}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        )}
-                    />
-                    <Controller
-                        name="density.measure_id"
-                        control={control}
-                        rules={{ required: true }}
-                        render={({ field, fieldState: { error } }) => (
-                            <TextField
-                                {...field}
-                                select
-                                fullWidth
-                                margin="normal"
-                                label="Tipo de medida"
-                                error={Boolean(error)}
-                            >
-                                {woodMeasures.map(({ id, name }, key) => (
-                                    <MenuItem key={key} value={id}>
-                                        {name}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        )}
-                    />
-                </Grid>
-                <Grid item md={12}>
-                    <Button variant="contained" size="large">
+                    >
                         Añadir
                     </Button>
                 </Grid>
+            </Grid>
+            <Grid item md={11}>
+                <TableContainer>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Madera</TableCell>
+                                <TableCell>Medidas</TableCell>
+                                <TableCell>Cantidad</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {!furnitureVarietiesList.length && (
+                                <TableRow>
+                                    <TableCell colSpan={4}>
+                                        <Typography align="center">
+                                            No se han registrado variedades para
+                                            esta madera
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                            {furnitureVarietiesList.map((item, index)=> (
+                                <TableRow key={index}>
+                                    <TableCell>
+                                        {item['woodName']}
+                                    </TableCell>
+                                    <TableCell>
+                                        {item['name']}
+                                    </TableCell>
+                                    <TableCell>
+                                        {item['amount']}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </Grid>
         </Grid>
     );
